@@ -45,10 +45,24 @@ public class AdminController {
         return "admin";
     }
 
+    @GetMapping("/admin_b")
+    public String getAdmin_bPage(Model model, Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("userIn", user);
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin_panel";
+    }
+
     @GetMapping("/admin/users")
     public String getUsers(Model model){
         model.addAttribute("users", userService.getAllUsers());
         return "users-list";
+    }
+
+    @GetMapping("/admin_b/users")
+    public String getUsers_bPage(Model model){
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin_panel";
     }
 
     @GetMapping("/admin/user-create")

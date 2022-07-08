@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Admin Page</title>
+</head>
+<body>
+
+<header>
+    <div class="modal-header bg-dark" >
+        <div>
+            <span class="text-white" th:text="${userIn.email}">value</span>
+            <span class="text-white">with roles:</span>
+            <span class="text-white" th:each="user : ${userIn.getRoles()}" th:text="${user.getName()}" id="roleUserIn">value</span>
+        </div>
+        <a th:href="@{/logout}" class="text-white-50">Logout</a>
+    </div>
+</header>
+
+<div class="d-flex ">
+<!--     sidebar-->
+    <div class=" w-25 p-1">
+        <div class="flex-grow-0 list-group bg-white" id="list-tab" role="tablist">
+            <a class="border-0 list-group-item list-group-item-action active" data-toggle="list" href="#" role="tab" id="adminTab">Admin</a>
+            <a class="border-0 list-group-item list-group-item-action"  data-toggle="list" href="#" role="tab" id="userTab">User</a>
+        </div>
+    </div>
+<!--    admin & user panel-->
+    <div class="flex-grow-1  w-75 h-100 p-3 bg-light">
+        <h2 id="panel__title">Admin Panel</h2>
+
+        <p id="panel__btn">
+            <a class="btn" data-toggle="collapse" href="#allUsers" role="button" aria-expanded="true" aria-controls="collapseExample" id="userTableBtn">
+                Users table
+            </a>
+            <a class="btn" data-toggle="collapse" href="#newUser" role="button" aria-expanded="true" aria-controls="collapseExample" id="newUserTableBtn">
+                New User
+            </a>
+
+        </p>
+        <div class="collapse border" id="allUsers">
+            <p>All users</p>
+            <div class="card card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each = "user : ${users}">
+                        <th scope="row" th:text = "${user.id}">1</th>
+                        <td th:text = "${user.username}">Otto</td>
+                        <td th:text = "${user.lastname}">Ottoi</td>
+                        <td th:text = "${user.age}">35</td>
+                        <td th:text = "${user.email}">Ottoi@mail.ru</td>
+                        <td th:each="user : ${user.getRoles()}" th:text="${user.getName()}">"ROLE_USER"</td>
+                        <td>
+                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editUser">Edit</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteUser">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+<!--            Edit popap-->
+                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group w-50" >
+                                        <label for="idEdit">id</label>
+                                        <input type="text" class="form-control" id="idEdit" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="usernameEdit">First name</label>
+                                        <input type="text" class="form-control" id="usernameEdit">
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="lastnameEdit">Last name</label>
+                                        <input type="text" class="form-control" id="lastnameEdit">
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="ageEdit">Age</label>
+                                        <input type="text" class="form-control" id="ageEdit">
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="emailEdit">Email</label>
+                                        <input type="text" class="form-control" id="emailEdit">
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="passwordEdit">Password</label>
+                                        <input type="password" class="form-control" id="passwordEdit">
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="roleEdit">Role</label>
+                                        <select id="roleEdit" class="custom-select" multiple>
+                                            <option value="ROLE_ADMIN">Admin</option>
+                                            <option value="ROLE_USER">User</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--            delete popap-->
+                <div class="modal fade" id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteUserTitle">Delete User</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group w-50" >
+                                        <label for="idDelete">id</label>
+                                        <input type="text" class="form-control" id="idDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="usernameDelete">First name</label>
+                                        <input type="text" class="form-control" id="usernameDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="lastnameDelete">Last name</label>
+                                        <input type="text" class="form-control" id="lastnameDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="ageDelete">Age</label>
+                                        <input type="text" class="form-control" id="ageDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="emailDelete">Email</label>
+                                        <input type="text" class="form-control" id="emailDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="passwordDelete">Password</label>
+                                        <input type="password" class="form-control" id="passwordDelete" readonly>
+                                    </div>
+                                    <div class="form-group w-50" >
+                                        <label for="roleDelete">Role</label>
+                                        <select id="roleDelete" class="custom-select" multiple disabled >
+                                            <option value="ROLE_ADMIN">Admin</option>
+                                            <option value="ROLE_USER">User</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--            New User-->
+        <div class="collapse border" id="newUser">
+            <p>Add new user</p>
+            <div class="card card-body">
+                <form>
+                    <div class="form-group w-50" >
+                        <label for="username">First name</label>
+                        <input type="text" class="form-control" id="username">
+                    </div>
+                    <div class="form-group w-50" >
+                        <label for="lastname">Last name</label>
+                        <input type="text" class="form-control" id="lastname">
+                    </div>
+                    <div class="form-group w-50" >
+                        <label for="age">Age</label>
+                        <input type="text" class="form-control" id="age">
+                    </div>
+                    <div class="form-group w-50" >
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" id="email">
+                    </div>
+                    <div class="form-group w-50" >
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="form-group w-50" >
+                        <label for="role">Role</label>
+                        <select id="role" class="custom-select" multiple>
+                            <option value="ROLE_ADMIN">Admin</option>
+                            <option value="ROLE_USER">User</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-outline-success">Add new user</button>
+                </form>
+            </div>
+        </div>
+        <div class="user__info collapse" id="userPanel">
+            <p>About user</p>
+            <div class="card card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row" th:text = "${userIn.id}">1</th>
+                        <td th:text = "${userIn.username}">Otto</td>
+                        <td th:text = "${userIn.lastname}">Ottoi</td>
+                        <td th:text = "${userIn.age}">35</td>
+                        <td th:text = "${userIn.email}">Ottoi@mail.ru</td>
+                        <td th:each="user : ${userIn.getRoles()}" th:text="${user.getName()}">"ROLE_USER"</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+<script src="index.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
