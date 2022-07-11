@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.Controllers;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +9,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,58 +41,49 @@ public class AdminController {
         return "admin";
     }
 
-    @GetMapping("/admin_b")
+    @RequestMapping(value = "/admin_b", method = RequestMethod.GET)
     public String getAdmin_bPage(Model model, Authentication authentication){
         User user = (User) authentication.getPrincipal();
         model.addAttribute("userIn", user);
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("newUser", new User());
+        model.addAttribute("newRole", new ArrayList<Role>());
+
         return "admin_panel";
     }
 
-    @GetMapping("/admin/users")
-    public String getUsers(Model model){
-        model.addAttribute("users", userService.getAllUsers());
-        return "users-list";
+    @RequestMapping(value = "/admin_b", method = RequestMethod.POST)
+    public String postNewUser(@ModelAttribute("newUser") User newUser, @RequestParam(value = "newRole") String[] roles){
+        newUser.setRoles(getRole(roles));
+        userService.saveUser(newUser);
+        return "redirect:/admin_b";
     }
 
-    @GetMapping("/admin_b/users")
-    public String getUsers_bPage(Model model){
-        model.addAttribute("users", userService.getAllUsers());
-        return "admin_panel";
+    @RequestMapping(value = "/admin_b/edit", method = RequestMethod.POST)
+    public String editUser(@ModelAttribute("userEdit") User userEdit, @RequestParam(value = "editRole") String[] roles){
+        userEdit.setRoles(getRole(roles));
+        userService.saveUser(userEdit);
+        return "redirect:/admin_b";
     }
 
-    @GetMapping("/admin/user-create")
-    public String createUserForm(Model model){
-        model.addAttribute("user", new User());
-        model.addAttribute("role", new ArrayList<Role>());
-        return "user-create";
-    }
-
-    @PostMapping("/admin/user-create")
-    public String createUser(@ModelAttribute("user") User user, @RequestParam(value = "role") String[] roles){
-        user.setRoles(getRole(roles));
-        userService.saveUser(user);
-        return "redirect:/admin/users";
-    }
-
-    @GetMapping("/admin/user-update/{id}")
+    @RequestMapping(value = "/admin_b/{id}", method = RequestMethod.GET)
     public String updateUserById (@PathVariable ("id") int id, Model model){
         User user = userRepository.getById(id);
-        model.addAttribute("user", user);
-        return "user-update";
+        model.addAttribute("userEdit", user);
+        return "redirect:/admin_b";
     }
 
-    @PostMapping("admin/user-update")
-    public String updateUser (@RequestParam(value = "role") String[] roles, @ModelAttribute("user") User user){
-        user.setRoles(getRole(roles));
+    @PostMapping(path = "/admin/user-update")
+    public String updateUser (@ModelAttribute User user,@RequestParam(value = "editRole") String[] editRole){
+        user.setRoles(getRole(editRole));
         userService.saveUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin_b";
     }
 
     @GetMapping("admin/user-delete/{id}")
     public String deleteUser(@PathVariable("id") int id){
         userService.deleteUser(id);
-        return "redirect:/admin/users";
+        return "redirect:/admin_b";
     }
 
 
