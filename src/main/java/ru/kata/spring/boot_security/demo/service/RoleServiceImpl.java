@@ -6,36 +6,25 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService{
 
-    private final RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
-    @Autowired
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     @Override
-    public Set<Role> getAllRoles() {
-        return  new HashSet<>(roleRepository.findAll());
+    public Role findById(long role_id) {
+        return roleRepository.findById(role_id);
     }
 
     @Override
-    public Role findById(Integer id) {
-        return roleRepository.getById(id);
-    }
-
-    @Override
-    public Set<Role> findByIdRoles(String name) {
-        return (Set<Role>) roleRepository.findByName(name);
-    }
-
-    @Override
-    public void addRole(Role role) {
-        roleRepository.save(role);
-
+    public List<Role> findAll() {
+        return roleRepository.findAll();
     }
 }

@@ -1,5 +1,8 @@
 package ru.kata.spring.boot_security.demo.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +16,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "username")
     private String username;
@@ -30,26 +33,18 @@ public class User implements UserDetails{
     @Column(name = "password")
     private String password;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
-    private Set<Role> roles = new HashSet<>();
+//    @JsonManagedReference
+//    @JsonBackReference
+    private Set<Role> roles;
 
     public User(){
 
-    }
-
-    public User(int id, String username, String email, String age, String lastname, String password) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.age = age;
-        this.lastname = lastname;
-        this.password = password;
     }
 
     public User(String username) {
@@ -92,11 +87,11 @@ public class User implements UserDetails{
         return true;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -140,4 +135,6 @@ public class User implements UserDetails{
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
+
 }
